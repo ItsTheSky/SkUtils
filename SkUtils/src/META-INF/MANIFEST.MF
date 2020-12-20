@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: 
+Class-Path: spigot-1.16.4.jar Skript (1).jar
+

@@ -1,0 +1,8 @@
+name: SkUtils
+version: alpha-0.1
+author: ItsTheSky
+website: https://itsthesky.info/
+description: Simple addon which add some utilities features and support other plugins, such as MMOItems or DeluxeBazaar
+main: info.itsthesky.SkUtils.SkUtils
+depend: [Skript]
+softdepend: [MMOItems, DeluxeBazaar, NoteBlockAPI]
