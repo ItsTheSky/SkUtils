@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-
 @Name("Bazaar Player Orders")
 @Description("Return all orders made by a specific player")
 @Since("alpha-0.1")
 @RequiredPlugins("DeluxeBazaar")
 @Examples("all bazaar orders of player")
+
 public class ExprPlayerOrders extends SimpleExpression<String> {
 
 

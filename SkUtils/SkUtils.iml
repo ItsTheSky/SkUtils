@@ -13,5 +13,7 @@
     <orderEntry type="library" name="MMOItems-6.5" level="project" />
     <orderEntry type="library" name="MMOLib-1.7" level="project" />
     <orderEntry type="library" name="NoteBlockAPI-1.6.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="askyblock" level="project" />
+    <orderEntry type="library" name="UltraSkyBlock-Core" level="project" />
   </component>
 </module>

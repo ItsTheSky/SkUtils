@@ -7,13 +7,12 @@ import ch.njol.skript.util.Timespan;
 import info.itsthesky.SkUtils.elements.DeluxeBazaar.*;
 import info.itsthesky.SkUtils.elements.MMOItems.EffOpenStation;
 import info.itsthesky.SkUtils.elements.MMOItems.ExprItem;
+import info.itsthesky.SkUtils.elements.askyblock.*;
 import info.itsthesky.SkUtils.elements.effects.EffSaveWorld;
 import info.itsthesky.SkUtils.elements.expressions.*;
-import info.itsthesky.SkUtils.elements.musics.EffPlaySound;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
+import info.itsthesky.SkUtils.elements.musics.*;
+import info.itsthesky.SkUtils.elements.usbc.ExprGetStats;
+import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +23,6 @@ import java.util.UUID;
 public class SkUtils extends JavaPlugin {
 
     SkriptAddon addon;
-    boolean NoteBlockAPI = true;
 
     @Override
     public void onEnable() {
@@ -42,7 +40,12 @@ public class SkUtils extends JavaPlugin {
 
         if (!Bukkit.getPluginManager().isPluginEnabled("NoteBlockAPI")){
             Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the NoteBlockAPI depend! You cannot use these syntaxes!");
-            NoteBlockAPI = false;
+        }
+        if (!Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")){
+            Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the aSkyBlock depend! You cannot use these syntaxes!");
+        }
+        if (!Bukkit.getPluginManager().isPluginEnabled("UltraSkyBlock-Core")){
+            Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the UltraSkyBlock-Core depend! You cannot use these syntaxes!");
         }
 
         try {
@@ -76,6 +79,7 @@ public class SkUtils extends JavaPlugin {
 
         /* Special DeluxeBazaar */
         if (Bukkit.getServer().getPluginManager().getPlugin("DeluxeBazaar") != null) {
+
             Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b DeluxeBazaar found! Enabling DeluxeBazaar syntaxes!");
             Skript.registerExpression(ExprPlayerMode.class, String.class, ExpressionType.COMBINED, "[skutils] [deluxebazaar] [the] [bazaar] mode of [the] [player] %player%");
             Skript.registerExpression(ExprPlayerOrders.class, String.class, ExpressionType.COMBINED, "[skutils] [deluxebazaar] [all] [bazaar] orders of [the] [player] %player%");
@@ -96,8 +100,24 @@ public class SkUtils extends JavaPlugin {
         /* Special NoteBlockAPI */
         if (Bukkit.getServer().getPluginManager().getPlugin("NoteBlockAPI") != null) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b NoteBlockAPI found! Enabling NoteBlockAPI syntaxes!");
-            // [(noteblockapi|nbapi|nba)]
             Skript.registerEffect(EffPlaySound.class, "[skutils] [(noteblockapi|nbapi|nba)] play [the] song [(called|with name|with id|named)] %string% to [the] [player] %player%");
+        }
+
+        /* Special aSkyBlock */
+        if (Bukkit.getServer().getPluginManager().getPlugin("ASkyBlock") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b aSkyBlock found! Enabling aSkyBlock syntaxes!");
+            Skript.registerExpression(ExprIslandCount.class, Integer.class, ExpressionType.COMBINED, "[skutils] [askyblock] all [server] [enabled] is[lands]");
+            Skript.registerExpression(ExprIslandWorld.class, World.class, ExpressionType.COMBINED, "[skutils] [askyblock] [the] is[lands] world");
+            Skript.registerExpression(ExprNetherWorld.class, World.class, ExpressionType.COMBINED, "[skutils] [askyblock] [the] nether is[lands] world");
+            Skript.registerExpression(ExprSpawnLocation.class, Location.class, ExpressionType.COMBINED, "[skutils] [askyblock] [the] [configured] spawn[point] loc[ation]");
+            Skript.registerEffect(EffCalcLevel.class, "[skutils] refresh [askyblock] [island] level of [the] [player] %player%");
+        }
+
+        /* Special USBC */
+        if (Bukkit.getServer().getPluginManager().getPlugin("UltraSkyBlock-Core") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b UltraSkyBlock-Core found! Enabling UltraSkyBlock-Core syntaxes!");
+            Skript.registerExpression(ExprGetStats.class, Double.class, ExpressionType.COMBINED, "[skutils] [usbc] stats %string% of [the] [player] %player%");
+            Skript.registerEffect(EffCalcLevel.class, "[skutils] set [usbc] stats %string% of [the] [player] %player% to [the] [value] %");
         }
     }
 }

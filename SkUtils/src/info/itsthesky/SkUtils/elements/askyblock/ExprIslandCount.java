@@ -1,28 +1,26 @@
-package info.itsthesky.SkUtils.elements.DeluxeBazaar;
+package info.itsthesky.SkUtils.elements.askyblock;
 
 import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import me.sedattr.bazaar.api.BazaarAPI;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-@Name("Bazaar Item Buy Price")
-@Description("Return the buy price of a specific item")
-@Since("alpha-0.1")
-@RequiredPlugins("DeluxeBazaar")
-@Examples("bazaar buy price of \"COBBLESTONE\" ")
-public class ExprBuyPrice extends SimpleExpression<Double> {
+@Name("aSkyBlock Islands Count")
+@Description("Return the total of current island on the server")
+@Since("alpha-0.2")
+@RequiredPlugins("aSkyBlock")
+@Examples("askyblock all server islands")
+public class ExprIslandCount extends SimpleExpression<Integer> {
 
-
-    private Expression<String> item;
 
     @Override
-    public Class<? extends Double> getReturnType() {
-        return Double.class;
+    public Class<? extends Integer> getReturnType() {
+        return Integer.class;
     }
 
     @Override
@@ -34,7 +32,6 @@ public class ExprBuyPrice extends SimpleExpression<Double> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parser) {
-        this.item = (Expression<String>) exprs[0];
         return true;
     }
 
@@ -46,11 +43,7 @@ public class ExprBuyPrice extends SimpleExpression<Double> {
 
     @Override
     @Nullable
-    protected Double[] get(Event event) {
-        final String i = item.getSingle(event);
-        if (i != null) {
-            return new Double[] {new BazaarAPI().getBuyPrice(i)};
-        }
-        return null;
+    protected Integer[] get(Event event) {
+        return new Integer[] {ASkyBlockAPI.getInstance().getIslandCount()};
     }
 }

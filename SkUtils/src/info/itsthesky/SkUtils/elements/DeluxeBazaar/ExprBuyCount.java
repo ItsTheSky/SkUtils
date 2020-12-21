@@ -7,7 +7,6 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import me.sedattr.bazaar.api.BazaarAPI;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 
