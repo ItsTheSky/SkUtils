@@ -15,5 +15,7 @@
     <orderEntry type="library" name="NoteBlockAPI-1.6.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="askyblock" level="project" />
     <orderEntry type="library" name="UltraSkyBlock-Core" level="project" />
+    <orderEntry type="library" name="Jobs4.16.3" level="project" />
+    <orderEntry type="library" name="HolographicDisplays" level="project" />
   </component>
 </module>

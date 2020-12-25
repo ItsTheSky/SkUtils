@@ -2,14 +2,18 @@ package info.itsthesky.SkUtils;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
+import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.util.Timespan;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import info.itsthesky.SkUtils.elements.ClassInfos;
 import info.itsthesky.SkUtils.elements.DeluxeBazaar.*;
 import info.itsthesky.SkUtils.elements.MMOItems.EffOpenStation;
 import info.itsthesky.SkUtils.elements.MMOItems.ExprItem;
 import info.itsthesky.SkUtils.elements.askyblock.*;
 import info.itsthesky.SkUtils.elements.effects.EffSaveWorld;
 import info.itsthesky.SkUtils.elements.expressions.*;
+import info.itsthesky.SkUtils.elements.hd.*;
 import info.itsthesky.SkUtils.elements.musics.*;
 import info.itsthesky.SkUtils.elements.usbc.ExprGetStats;
 import org.bukkit.*;
@@ -24,14 +28,23 @@ public class SkUtils extends JavaPlugin {
 
     SkriptAddon addon;
 
+    private static SkUtils instance;
+
+    public static SkUtils getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
+
+        instance = this;
 
         Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§3 Loading of SkUtils version " + getDescription().getVersion() + " by " + getDescription().getAuthors());
         if (!Bukkit.getServer().getPluginManager().isPluginEnabled("Skript")) {
             Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8] §cSkript not found ! Disabling ...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        ClassInfos.registerTypes();
         addon = Skript.registerAddon(this);
         registerSkriptSyntaxes();
         if (Bukkit.getServer().getPluginManager().getPlugin("DeluxeBazaar") == null) {
@@ -111,13 +124,26 @@ public class SkUtils extends JavaPlugin {
             Skript.registerExpression(ExprNetherWorld.class, World.class, ExpressionType.COMBINED, "[skutils] [askyblock] [the] nether is[lands] world");
             Skript.registerExpression(ExprSpawnLocation.class, Location.class, ExpressionType.COMBINED, "[skutils] [askyblock] [the] [configured] spawn[point] loc[ation]");
             Skript.registerEffect(EffCalcLevel.class, "[skutils] refresh [askyblock] [island] level of [the] [player] %player%");
+
         }
 
         /* Special USBC */
         if (Bukkit.getServer().getPluginManager().getPlugin("UltraSkyBlock-Core") != null) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b UltraSkyBlock-Core found! Enabling UltraSkyBlock-Core syntaxes!");
             Skript.registerExpression(ExprGetStats.class, Double.class, ExpressionType.COMBINED, "[skutils] [usbc] stats %string% of [the] [player] %player%");
-            Skript.registerEffect(EffCalcLevel.class, "[skutils] set [usbc] stats %string% of [the] [player] %player% to [the] [value] %");
+            // Skript.registerEffect(EffCalcLevel.class, "[skutils] set [usbc] stats %string% of [the] [player] %player% to [the] [value] %");
+        }
+
+        /* Special HD */
+        if (Bukkit.getServer().getPluginManager().getPlugin("HolographicDisplays") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b HolographicDisplays found! Enabling HolographicDisplays syntaxes!");
+            Skript.registerExpression(ExprCreateHolo.class, Hologram.class, ExpressionType.COMBINED, "[skutils] new [hd] holo[gram] at %location% [with [the] text %string%]");
+            Skript.registerEffect(EffAddLine.class, "[skutils] add [new] [line] %string% to [the] [hd] [holo] %hologram%");
+            Skript.registerEffect(EffRemoveLine.class, "[skutils] remove [line] [number] %integer% of [the] [hd] [holo] %hologram%");
+            Skript.registerEffect(EffRemoveHolo.class, "[skutils] delete [the] [hd] holo[gram] %hologram%");
+            Skript.registerEffect(EffTeleportHolo.class, "[skutils] teleport [the] [hd] holo[gram] %hologram% to [the] [location] %location%");
+            Skript.registerEffect(EffShowHolo.class, "[skutils] show [the] [dh] holo[gram] %hologram% to [the] [player] %player%");
+            Skript.registerEffect(EffHideHolo.class, "[skutils] hide [the] [dh] holo[gram] %hologram% from [the] [player] %player%");
         }
     }
 }
