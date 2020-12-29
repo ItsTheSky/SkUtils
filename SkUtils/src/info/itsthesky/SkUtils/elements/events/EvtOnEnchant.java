@@ -1,36 +1,18 @@
-package info.itsthesky.SkUtils.elements.events;
+/*package info.itsthesky.SkUtils.elements.events;
 
-import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityAirChangeEvent;
-import ch.njol.skript.Skript;
-import ch.njol.skript.entity.EntityData;
-import ch.njol.skript.lang.Literal;
-import ch.njol.skript.lang.SkriptEvent;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+public class EvtOnEnchant implements Listener {
 
-public class EvtOnEnchant extends SkriptEvent {
-
-    Literal<EntityData<?>> entities;
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean init(Literal<?>[] args, int matchedPattern, ParseResult parseResult) {
-        entities = (Literal<EntityData<?>>) args[0];
-        return true;
+    @EventHandler
+    public void EnchantItemEvent(@NotNull EnchantItemEvent event)
+    {
+        event.getEnchanter().sendMessage("Tu viens d'enchanter un objet:");
+        event.getEnchanter().sendMessage(String.valueOf(event.getItem()));
+        event.getEnchanter().sendMessage(String.valueOf(event.getExpLevelCost()));
     }
-
-    @Override
-    public boolean check(Event e) {
-        //Explaining still
-        return false;
-    }
-
-    @Override
-    public String toString(@Nullable Event e, boolean debug) {
-        return "On enchant event  " + entities.toString(e, debug);
-    }
-
 }
+*/

@@ -2,7 +2,6 @@ package info.itsthesky.SkUtils;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.util.Timespan;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
@@ -11,12 +10,21 @@ import info.itsthesky.SkUtils.elements.DeluxeBazaar.*;
 import info.itsthesky.SkUtils.elements.MMOItems.EffOpenStation;
 import info.itsthesky.SkUtils.elements.MMOItems.ExprItem;
 import info.itsthesky.SkUtils.elements.askyblock.*;
+import info.itsthesky.SkUtils.elements.bossbar.*;
+import info.itsthesky.SkUtils.elements.effects.EffPasteSchem;
 import info.itsthesky.SkUtils.elements.effects.EffSaveWorld;
 import info.itsthesky.SkUtils.elements.expressions.*;
 import info.itsthesky.SkUtils.elements.hd.*;
 import info.itsthesky.SkUtils.elements.musics.*;
+import info.itsthesky.SkUtils.elements.slimefun.*;
 import info.itsthesky.SkUtils.elements.usbc.ExprGetStats;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideLayout;
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
 import org.bukkit.*;
+import org.bukkit.boss.BossBar;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,6 +68,13 @@ public class SkUtils extends JavaPlugin {
         if (!Bukkit.getPluginManager().isPluginEnabled("UltraSkyBlock-Core")){
             Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the UltraSkyBlock-Core depend! You cannot use these syntaxes!");
         }
+        if (!Bukkit.getPluginManager().isPluginEnabled("FastAsyncWorldEdit")){
+            Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the FastAsyncWorldEdit depend! You cannot use these syntaxes!");
+        }
+        /*
+        if (!Bukkit.getPluginManager().isPluginEnabled("Slimefun")){
+            Bukkit.getConsoleSender().sendMessage("§8[§6SkUtils§8]§e Cannot found the SlimeFun depend! You cannot use these syntaxes!");
+        } */
 
         try {
             addon.loadClasses("info.itsthesky.SkWorld", "elements");
@@ -83,9 +98,16 @@ public class SkUtils extends JavaPlugin {
         Skript.registerExpression(ExprItemDrop.class, Integer.class, ExpressionType.COMBINED, "[skutils] [the] [total] items drop [stats] of [the] [player] %offlineplayer%");
         Skript.registerExpression(ExprAllPlugins.class, Plugin.class, ExpressionType.COMBINED, "[skutils] all [server|spigot|paper] [installed] plugins");
         Skript.registerExpression(ExprUUIDToPlayer.class, OfflinePlayer.class, ExpressionType.COMBINED, "[skutils] [the] player [from|with] u[u]id %string%");
+        Skript.registerExpression(ExprBossbar.class, BossBar.class, ExpressionType.COMBINED, "[skutils] new [bukkit] boss[bar]");
 
         /* Effects */
         Skript.registerEffect(EffSaveWorld.class, "[skutils] save [the] [world] %world% [on disk]");
+        Skript.registerEffect(EffAddPlayerToBB.class, "[skutils] add [the] [player] %player% to [the] boss[bar] %bossbar%");
+        Skript.registerEffect(EffDelPlayerFromBB.class, "[skutils] (delete|remove) [the] [player] %player% from [the] boss[bar] %bossbar%");
+        Skript.registerEffect(EffChangeBossBarTitle.class, "[skutils] (set|change) [the] title of [the] boss[bar] %bossbar% to %string%");
+        Skript.registerEffect(EffChangeBossBarColor.class, "[skutils] (set|change) [the] color of [the] boss[bar] %bossbar% to %string%");
+        Skript.registerEffect(EffChangeBossBarStyle.class, "[skutils] (set|change) [the] style of [the] boss[bar] %bossbar% to %string%");
+        Skript.registerEffect(EffChangeBossBarProgress.class, "[skutils] (set|change) [the] progress of [the] boss[bar] %bossbar% to %number%");
 
         /* Events */
         // Skript.registerEvent("Remaining Air", EvtOnEnchant.class, EnchantItemEvent.class, "[skutils] [on] enchant[er] [event]");
@@ -107,8 +129,21 @@ public class SkUtils extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b MMOItems found! Enabling MMOItems syntaxes!");
             Skript.registerExpression(ExprItem.class, ItemStack.class, ExpressionType.COMBINED, "[skutils] [mmoitems] item [with] [type] %string% and [with] [id] %string%");
             Skript.registerEffect(EffOpenStation.class, "[skutils] [mmoitems] open [the] station[s] [(named|with name|called|with id)] %string% to [the] [player] %player%");
-
+            Skript.registerEffect(EffOpenSFBook.class, "[skutils] open [(sf|slimefun)] [guide] %guide% to [the] [player] %player%");
         }
+
+        /* Special SlimeFun
+        if (Bukkit.getServer().getPluginManager().getPlugin("Slimefun") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b SlimeFun found! Enabling SlimeFun syntaxes!");
+            Skript.registerExpression(ExprIsGuideItem.class, Boolean.class, ExpressionType.COMBINED, "[skutils] item %itemstack% is [the] [slimefun] guide");
+            Skript.registerExpression(ExprGuide.class, SlimefunGuideLayout.class, ExpressionType.COMBINED, "[skutils] [(sf|slimefun)] book %string% [guide] [type]");
+            Skript.registerExpression(ExprNSK.class, NamespacedKey.class, ExpressionType.COMBINED, "[skutils] [new] (namespacedkey|nsk) [(with id|named)] %string%");
+            Skript.registerExpression(ExprCustomItem.class, CustomItem.class, ExpressionType.COMBINED, "[skutils] [new] [(slimefun|sf)] (customitem|ci) (with item|based on) %itemstack%");
+            Skript.registerExpression(ExprRecipeType.class, RecipeType.class, ExpressionType.COMBINED, "[skutils] [(slimefun|sf)] recipe type [with id] %string%");
+            Skript.registerExpression(ExprNewCategory.class, Category.class, ExpressionType.COMBINED, "[skutils] [new] [(slimefun|sf)] (category|cat) with id %namespacedkey% [and] with [custom]item %customitem%");
+            Skript.registerExpression(ExprNewSFItemStack.class, SlimefunItemStack.class, ExpressionType.COMBINED, "[skutils] [new] [(slimefun|sf)] item[stack] (with item|based on) %itemstack%");
+            Skript.registerEffect(EffRegisterSFItem.class, "[skutils] register [new] [(slimefun|sf)] item %slimefunitemstack% in cat[egory] %category% with [recipe] type %recipetype% and recipe [pattern] %itemstacks%");
+        }*/
 
         /* Special NoteBlockAPI */
         if (Bukkit.getServer().getPluginManager().getPlugin("NoteBlockAPI") != null) {
@@ -145,5 +180,12 @@ public class SkUtils extends JavaPlugin {
             Skript.registerEffect(EffShowHolo.class, "[skutils] show [the] [dh] holo[gram] %hologram% to [the] [player] %player%");
             Skript.registerEffect(EffHideHolo.class, "[skutils] hide [the] [dh] holo[gram] %hologram% from [the] [player] %player%");
         }
+
+        /* Special FAWE */
+        if (Bukkit.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "§8[§6SkUtils§8]§b FastAsyncWorldEdit found! Enabling FastAsyncWorldEdit syntaxes!");
+            Skript.registerEffect(EffPasteSchem.class, "[skutils] [fawe] paste [the] [schem[atic]] %string% at [the] [location] %location% including air %boolean%");
+        }
+
     }
 }
